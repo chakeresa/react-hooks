@@ -8,8 +8,17 @@ function useLocalStorageState(key, initialValue = '', {serialize = JSON.stringif
     deserialize(window.localStorage.getItem(key)) || initialValue
   )
 
+  const oldKeyRef = React.useRef(key)
+
   React.useEffect(
     () => {
+      const oldKey = oldKeyRef.current
+
+      if (key !== oldKey) {
+        window.localStorage.removeItem(oldKey)
+      }
+
+      oldKeyRef.current = key
       window.localStorage.setItem(key, serialize(value))
     },
     [key, value, serialize]
