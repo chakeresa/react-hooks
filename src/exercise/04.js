@@ -24,8 +24,9 @@ function Board() {
     // 🐨 first, if there's already winner or there's already a value at the
     // given square index (like someone clicked a square that's already been
     // clicked), then return early so we don't make any state changes
-
-    if (winner === null && squares[square] === null) {
+    if (winner || squares[square]) {
+      return
+    }
 
     // 🦉 It's typically a bad idea to mutate or directly change state in React.
     // Doing so can lead to subtle bugs that can easily slip into production.
@@ -37,10 +38,9 @@ function Board() {
     // 💰 `squaresCopy[square] = nextValue`
     //
     // 🐨 set the squares to your copy
-      let squaresCopy = [...squares]
-      squaresCopy[square] = nextValue
-      setSquares(squaresCopy)
-    }
+    let squaresCopy = [...squares]
+    squaresCopy[square] = nextValue
+    setSquares(squaresCopy)
   }
 
   function restart() {
