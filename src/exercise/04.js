@@ -4,12 +4,22 @@
 import * as React from 'react'
 
 function Board() {
-  const initialSquares = Array(9).fill(null)
+  const squaresInLocalStorage = JSON.parse(window.localStorage.getItem("squares"))
+  const emptySquares = Array(9).fill(null)
+  const initialSquares = squaresInLocalStorage ? squaresInLocalStorage : emptySquares
+
   const [squares, setSquares] = React.useState(initialSquares)
 
   const winner = calculateWinner(squares)
   const nextValue = calculateNextValue(squares)
   const status = calculateStatus(winner, squares, nextValue)
+
+  React.useEffect(
+    () => {
+      window.localStorage.setItem("squares", JSON.stringify(squares))
+    },
+    [squares]
+  )
 
   // 🐨 We'll need the following bits of derived state:
   // - nextValue ('X' or 'O')
@@ -44,7 +54,7 @@ function Board() {
   }
 
   function restart() {
-    setSquares(initialSquares)
+    setSquares(emptySquares)
   }
 
   function renderSquare(i) {
