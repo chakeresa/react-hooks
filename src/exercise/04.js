@@ -25,7 +25,7 @@ function Board() {
     // given square index (like someone clicked a square that's already been
     // clicked), then return early so we don't make any state changes
 
-    if (calculateWinner(squares) === null && squares[square] === null) {
+    if (winner === null && squares[square] === null) {
 
     // 🦉 It's typically a bad idea to mutate or directly change state in React.
     // Doing so can lead to subtle bugs that can easily slip into production.
