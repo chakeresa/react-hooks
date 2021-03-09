@@ -4,11 +4,9 @@
 import * as React from 'react'
 
 function Board() {
-  const squaresInLocalStorage = JSON.parse(window.localStorage.getItem("squares"))
   const emptySquares = Array(9).fill(null)
-  const initialSquares = squaresInLocalStorage ? squaresInLocalStorage : emptySquares
 
-  const [squares, setSquares] = React.useState(initialSquares)
+  const [squares, setSquares] = React.useState(() => JSON.parse(window.localStorage.getItem("squares")) || emptySquares)
 
   const winner = calculateWinner(squares)
   const nextValue = calculateNextValue(squares)
