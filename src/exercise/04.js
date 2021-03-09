@@ -58,15 +58,7 @@ function Board() {
 
   const winner = calculateWinner(squares)
   const nextValue = calculateNextValue(squares)
-  let status
-
-  if (winner) {
-    status = `Winner: ${winner}`
-  } else if (nextValue) {
-    status = `Next player: ${nextValue}`
-  } else {
-    status = `Scratch: Cat's game`
-  }
+  const status = calculateStatus(winner, squares, nextValue)
 
   return (
     <div>
@@ -118,15 +110,7 @@ function calculateNextValue(squares) {
   const xSquaresCount = squares.filter(r => r === 'X').length
   const oSquaresCount = squares.filter(r => r === 'O').length
 
-  const scratch = (xSquaresCount + oSquaresCount) === 9
-
-  if (scratch) {
-    return null
-  } else if (oSquaresCount === xSquaresCount) {
-    return 'X'
-  } else {
-    return 'O'
-  }
+  return oSquaresCount === xSquaresCount ? 'X' : 'O'
 }
 
 // eslint-disable-next-line no-unused-vars
