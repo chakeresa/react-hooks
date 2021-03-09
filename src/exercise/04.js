@@ -5,9 +5,11 @@ import * as React from 'react'
 
 function Board() {
   const initialSquares = Array(9).fill(null)
-  // 🐨 squares is the state for this component. Add useState for squares
-  // const squares = Array(9).fill(null)
   const [squares, setSquares] = React.useState(initialSquares)
+
+  const winner = calculateWinner(squares)
+  const nextValue = calculateNextValue(squares)
+  const status = calculateStatus(winner, squares, nextValue)
 
   // 🐨 We'll need the following bits of derived state:
   // - nextValue ('X' or 'O')
@@ -35,7 +37,6 @@ function Board() {
     // 💰 `squaresCopy[square] = nextValue`
     //
     // 🐨 set the squares to your copy
-      const nextValue = calculateNextValue(squares)
       let squaresCopy = [...squares]
       squaresCopy[square] = nextValue
       setSquares(squaresCopy)
@@ -43,8 +44,6 @@ function Board() {
   }
 
   function restart() {
-    // 🐨 reset the squares
-    // 💰 `Array(9).fill(null)` will do it!
     setSquares(initialSquares)
   }
 
@@ -56,13 +55,8 @@ function Board() {
     )
   }
 
-  const winner = calculateWinner(squares)
-  const nextValue = calculateNextValue(squares)
-  const status = calculateStatus(winner, squares, nextValue)
-
   return (
     <div>
-      {/* 🐨 put the status in the div below */}
       <div className="status">{status}</div>
       <div className="board-row">
         {renderSquare(0)}
