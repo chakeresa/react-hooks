@@ -5,11 +5,11 @@ import * as React from 'react'
 import {useLocalStorageState} from '../utils'
 
 function Moves({currentStep, onStepClick}) {
-  function renderStep(i) {
+  function renderStep(stepIndex) {
     return (
-      <li>
-        <button onClick={() => onStepClick(i)}>
-          Go to move {i}
+      <li key={stepIndex}>
+        <button onClick={() => onStepClick(stepIndex)}>
+          Go to move {stepIndex}
         </button>
       </li>
     )
