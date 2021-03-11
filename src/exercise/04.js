@@ -6,10 +6,13 @@ import {useLocalStorageState} from '../utils'
 
 function Moves({currentStep, onStepClick}) {
   function renderStep(stepIndex) {
+    const isCurrentStep = stepIndex === currentStep
+    const buttonText = stepIndex === 0 ? "Go to game start" : `Go to move #${stepIndex}`
+
     return (
       <li key={stepIndex}>
-        <button onClick={() => onStepClick(stepIndex)}>
-          Go to move {stepIndex}
+        <button disabled={isCurrentStep} onClick={() => onStepClick(stepIndex)}>
+          {buttonText} {isCurrentStep ? "(current)" : null}
         </button>
       </li>
     )
