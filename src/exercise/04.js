@@ -77,13 +77,16 @@ function Game() {
 
   return (
     <div className="game">
-      <div className="status">{status}</div>
       <div className="game-board">
         <Board squares={currentSquares} onSquareClick={selectSquare}/>
+        <button className="restart" onClick={restart}>
+          restart
+        </button>
       </div>
-      <button className="restart" onClick={restart}>
-        restart
-      </button>
+      <div className="game-info">
+        <div>{status}</div>
+        {/* <ol>{moves}</ol> */}
+      </div>
     </div>
   )
 }
