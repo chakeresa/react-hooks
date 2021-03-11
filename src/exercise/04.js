@@ -4,7 +4,7 @@
 import * as React from 'react'
 import {useLocalStorageState} from '../utils'
 
-function Moves({currentStep, onStepClick}) {
+function Moves({currentStep, history, onStepClick}) {
   function renderStep(stepIndex) {
     const isCurrentStep = stepIndex === currentStep
     const buttonText = stepIndex === 0 ? "Go to game start" : `Go to move #${stepIndex}`
@@ -18,7 +18,7 @@ function Moves({currentStep, onStepClick}) {
     )
   }
 
-  const moves = [...Array(currentStep + 1).keys()].map(stepIndex => renderStep(stepIndex))
+  const moves = [...Array(history.length).keys()].map(stepIndex => renderStep(stepIndex))
 
   return (
     <div>
@@ -63,7 +63,6 @@ function Board({squares, onSquareClick}) {
 
 function Game() {
   const initialHistory = [Array(9).fill(null)]
-
   const [currentStep, setCurrentStep] = useLocalStorageState("currentStep", 0)
   const [history, setHistory] = useLocalStorageState("history", initialHistory)
 
@@ -79,30 +78,26 @@ function Game() {
     setHistory(initialHistory)
   }
 
-  function selectSquare(square) {
+  function selectSquare(squareIndex) {
     // 🐨 first, if there's already winner or there's already a value at the
     // given square index (like someone clicked a square that's already been
     // clicked), then return early so we don't make any state changes
-    if (winner || currentSquares[square]) {
+    if (winner || currentSquares[squareIndex]) {
       return
     }
 
     let updatedSquares = [...currentSquares]
-    updatedSquares[square] = nextValue
+    updatedSquares[squareIndex] = nextValue
 
-    let updatedHistory = [...history]
-    updatedHistory.push(updatedSquares)
-
-    console.log("updatedHistory", updatedHistory)
+    const validHistory = history.slice(0, currentStep + 1)
+    const updatedHistory = [...validHistory, updatedSquares]
 
     setHistory(updatedHistory)
-    setCurrentStep(currentStep + 1)
+    setCurrentStep(validHistory.length)
   }
 
-  function selectStep(index) {
-    setCurrentStep(index)
-    const newHistory = history.slice(0, index + 1)
-    setHistory(newHistory)
+  function selectStep(stepIndex) {
+    setCurrentStep(stepIndex)
   }
 
   return (
@@ -115,7 +110,7 @@ function Game() {
       </div>
       <div className="game-info">
         <div>{status}</div>
-        <Moves currentStep={currentStep} onStepClick={selectStep} />
+        <Moves history={history} currentStep={currentStep} onStepClick={selectStep} />
       </div>
     </div>
   )
