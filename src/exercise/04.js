@@ -4,6 +4,27 @@
 import * as React from 'react'
 import {useLocalStorageState} from '../utils'
 
+function Moves({currentStep, onStepClick}) {
+  function renderStep(i) {
+    return (
+      <li>
+        <button onClick={() => onStepClick(i)}>
+          Go to move {i}
+        </button>
+      </li>
+    )
+  }
+
+  const moves = [...Array(currentStep + 1).keys()].map(stepIndex => renderStep(stepIndex))
+
+  return (
+    <div>
+      <ol>
+        {moves}
+      </ol>
+    </div>
+  )
+}
 function Board({squares, onSquareClick}) {
   // This is the function your square click handler will call. `square` should
   // be an index. So if they click the center square, this will be `4`.
@@ -75,6 +96,12 @@ function Game() {
     setCurrentStep(currentStep + 1)
   }
 
+  function selectStep(index) {
+    setCurrentStep(index)
+    const newHistory = history.slice(0, index + 1)
+    setHistory(newHistory)
+  }
+
   return (
     <div className="game">
       <div className="game-board">
@@ -85,7 +112,7 @@ function Game() {
       </div>
       <div className="game-info">
         <div>{status}</div>
-        {/* <ol>{moves}</ol> */}
+        <Moves currentStep={currentStep} onStepClick={selectStep} />
       </div>
     </div>
   )
