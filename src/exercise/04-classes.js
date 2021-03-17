@@ -12,7 +12,7 @@ import * as React from 'react'
 
 function Board () {
   const emptySquares = Array(9).fill(null)
-  const [squares, setSquares] = React.useState(JSON.parse(window.localStorage.getItem('squares')) || emptySquares)
+  const [squares, setSquares] = React.useState(() => JSON.parse(window.localStorage.getItem('squares')) || emptySquares)
 
   React.useEffect(() => {
     window.localStorage.setItem('squares', JSON.stringify(squares))
