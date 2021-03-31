@@ -14,14 +14,19 @@ import {
 } from '../pokemon'
 
 function PokemonInfo({pokemonName}) {
-  const [pokemon, setPokemon] = React.useState(null)
-  const [error, setError] = React.useState(null)
-
+  // status values:
   // idle: no request made yet
   // pending: request started
   // resolved: request successful
   // rejected: request failed
-  const [status, setStatus] = React.useState('idle')
+  const [state, setState] = React.useState({
+    pokemon: null,
+    error: null,
+    status: 'idle',
+  })
+  const {pokemon, error, status} = state
+
+  console.log(state)
 
   // 🐨 use React.useEffect where the callback should be called whenever the
   // pokemon name changes.
@@ -31,20 +36,26 @@ function PokemonInfo({pokemonName}) {
       return null
     }
 
-    setStatus('pending')
+    // question for the group: why doesn't this work?
+    // setState({status: 'pending', error: null, pokemon: null})
+    setState({status: 'pending'})
 
     // 💰 Use the `fetchPokemon` function to fetch a pokemon by its name:
     fetchPokemon(pokemonName)
       .then(pokemon => {
-        // question for the team:
+        // questions for the team:
+
         // initially I had the setStatus lines above the setPokemon lines
         // but that totally borked everything... why?
-        setPokemon(pokemon)
-        setStatus('resolved')
+
+        // similarly to above setState issue: why doesn't this work?
+        // setState({...state, status: 'resolved', pokemon})
+
+        setState({status: 'resolved', pokemon})
       })
       .catch(error => {
-        setError(error)
-        setStatus('rejected')
+        // setState({...state, status: 'rejected', error})
+        setState({status: 'rejected', error})
       })
 
     // OR:
@@ -54,6 +65,9 @@ function PokemonInfo({pokemonName}) {
     // )
 
     // 💰 DON'T FORGET THE DEPENDENCIES ARRAY!
+    // question for the group:
+    // I get a warning when I don't include `state` in the dependency array
+    // but if I do include it, my page is borked
   }, [pokemonName])
 
   if (status === 'idle') {
