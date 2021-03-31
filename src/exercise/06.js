@@ -14,9 +14,14 @@ import {
 } from '../pokemon'
 
 function PokemonInfo({pokemonName}) {
-  // 🐨 Have state for the pokemon (null)
   const [pokemon, setPokemon] = React.useState(null)
   const [error, setError] = React.useState(null)
+
+  // idle: no request made yet
+  // pending: request started
+  // resolved: request successful
+  // rejected: request failed
+  const [status, setStatus] = React.useState('idle')
 
   // 🐨 use React.useEffect where the callback should be called whenever the
   // pokemon name changes.
@@ -26,16 +31,21 @@ function PokemonInfo({pokemonName}) {
       return null
     }
 
-    // 🐨 before calling `fetchPokemon`, clear the current pokemon state by setting it to null
-    setPokemon(null)
-    setError(null)
+    setStatus('pending')
 
     // 💰 Use the `fetchPokemon` function to fetch a pokemon by its name:
     fetchPokemon(pokemonName)
       .then(pokemon => {
+        // question for the team:
+        // initially I had the setStatus lines above the setPokemon lines
+        // but that totally borked everything... why?
         setPokemon(pokemon)
+        setStatus('resolved')
       })
-      .catch(error => setError(error))
+      .catch(error => {
+        setError(error)
+        setStatus('rejected')
+      })
 
     // OR:
     // fetchPokemon(pokemonName).then(
@@ -46,23 +56,21 @@ function PokemonInfo({pokemonName}) {
     // 💰 DON'T FORGET THE DEPENDENCIES ARRAY!
   }, [pokemonName])
 
-  // 🐨 return the following things based on the `pokemon` state and `pokemonName` prop:
-  //   1. no pokemonName: 'Submit a pokemon'
-  //   2. pokemonName but no pokemon: <PokemonInfoFallback name={pokemonName} />
-  //   3. pokemon: <PokemonDataView pokemon={pokemon} />
-  if (!pokemonName) {
+  if (status === 'idle') {
     return 'Submit a pokemon'
-  } else if (error) {
+  } else if (status === 'rejected') {
     return (
       <div role="alert">
         There was an error:{' '}
         <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
       </div>
     )
-  } else if (!pokemon) {
+  } else if (status === 'pending') {
     return <PokemonInfoFallback name={pokemonName} />
+  } else if (status === 'resolved') {
+    return <PokemonDataView pokemon={pokemon} />
   }
-  return <PokemonDataView pokemon={pokemon} />
+  throw new Error('how did you get here?')
 }
 
 function App() {
